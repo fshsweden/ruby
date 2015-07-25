@@ -17,22 +17,22 @@ class MyApplication
   def run
    
     program :version, '0.0.1'
-    program :description, 'Does oh so many things.'
+    program :description, 'Verifies data in ZDAT_TRADES.'
  
-    default_command :get_price_at
+    default_command :verify_zdat_prices
 
-    command :get_price_at do |c|
+    command :verify_zdat_prices do |c|
       c.syntax = '<app> [options]'
-      c.summary = 'Gets the price of SYMBOL at a certain TIME'
+      c.summary = 'Verifies ZDAT_PRICES of SYMBOL'
       c.description = c.summary # Because we're lazy
-      c.example 'Gets price of GWPH at 2015-06-23', '<app> -s GWPH -d 2015-06-23 '
+      c.example 'Verifies GWPH', '<app> -s GWPH '
       c.option '-s', '--symbol SYMBOL', String, 'Specify a symbol' # Option aliasing
+      c.option '-d', '--date DATE', String, 'Specify a date' # Option aliasing
       c.action do |args, options|
         #name = args.shift # or args.first or args[0] if you wish
-        puts options.inspect
-        puts "Hello #{SYMBOL}!"
+        puts "Verifying #{options.symbol}!"
         # Or in a real app, you would call a method and pass command line arguments to it.
-        run_query
+        run_query options.symbol, options.date
       end
     end
  
@@ -51,12 +51,27 @@ class MyApplication
     run!
   end
 
-  def run_query
-      puts "RUNNING!"
+  
+  
+  
+  #
+  #   Read all ZDAT_TRADES for a certain day
+  #   Calculate OPEN and CLOSE from  opening_time and closing_time
+  #   Calculate CHG
+  #   Calculate HIGH and LOW
+  #   Calculate intraday Volatility
+  #   Calculate <other interesting stuff> ?
+  #   Verify data (no sudden jumps). Remove data before and after trading?
+  #
+  #
+  
+  def run_query (s, d)
+    puts "Running #{s} #{d}!"
+
       client = Mysql2::Client.new(:host => "alphatrading.dnsalias.com", :username => "alpha", :password => "alpha", :database => "alpha")
 
-      symbol = SYMBOL
-      dt = "2014-10-16"
+      symbol = s
+      dt = d # "2014-10-16"
       tm = "17:00:00"
 
       qry = "select " +
@@ -64,16 +79,14 @@ class MyApplication
       "where " +
       "  symbol = '#{symbol}' " +
       "AND " +
-      "  dt = '#{dt}'  " + 
-      "AND " +
-      "  TIME(FROM_UNIXTIME(ts / 1000)) >= '#{tm}' " +
-      "LIMIT 1,1 "
+      "  dt = '#{dt}'  " 
   
       params = client.query(qry)
+      
       params.each do |x|
         puts x["symbol"] + " " + x["price"].to_s
       end
-
+      puts params.size # 28598 for MSFT
     end
 end
 
