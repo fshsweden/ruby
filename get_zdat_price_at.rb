@@ -13,7 +13,6 @@ class MyApplication
 
   SYMBOL = "MSFT"
 
-
   def run
    
     program :version, '0.0.1'
