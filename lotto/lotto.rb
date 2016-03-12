@@ -39,19 +39,37 @@ puts "Result should be 1: #{num_correct(test_correct, check)}"
 
 corr = get_lotto
 
+#max_correct = 0
+#1000000.times {
+#	my_row = get_lotto
+#	#puts "Correct numbers are #{num_correct(corr, my_row)}"
+#
+#	correct = num_correct(corr, my_row)
+#	if (correct == 7) 
+#		puts "************************ SJU RÄTT *********************"
+#	end
+#
+#	if (correct > max_correct)
+#		max_correct = correct
+#	end
+#}
+#
+#puts "Best guess was: #{max_correct} !"
 
-max_correct = 0
-1000000.times {
+
+tries = 0
+loop do 
 	my_row = get_lotto
-	#puts "Correct numbers are #{num_correct(corr, my_row)}"
-
 	correct = num_correct(corr, my_row)
-	if (correct > max_correct)
-		max_correct = correct
+	tries = tries + 1
+	if tries % 1000000 == 0
+		puts "1 miljon försök..."
 	end
-}
 
-puts "Best guess was: #{max_correct} !"
+	break if correct == 7
+end
+
+puts "7 rätt efter #{tries} försök!"
 puts "Correct numbers were:"
 corr.keys.each do |i|
 	puts "#{i}"
