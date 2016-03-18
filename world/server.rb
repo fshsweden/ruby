@@ -1,5 +1,9 @@
 #
+# The approximate conversions are:
 #
+# Latitude: 1 deg = 110.574 km
+#
+# Longitude: 1 deg = 111.320*cos(latitude) km
 #
 #
 #
@@ -28,9 +32,23 @@ get '/getpos' do
 end 
 
 post "/updpos" do
+  puts "PARAMS:" + params.inspect
+  request.body.rewind  # in case someone already read it
+  #data = JSON.parse request.body.read
+  #puts "DATA:" + data.inspect
+  world.update_position params["data"]["name"], 
+                        params["data"]["lat" ], 
+                        params["data"]["lng" ]
+
+#  puts "UPDATING " + params['name'] + " with " + params['lat'] + " and " + params['lng']
+  return "success".to_json
+end
+
+post "/updpos1" do
+  puts "PARAMS:" + params.inspect
   request.body.rewind  # in case someone already read it
   data = JSON.parse request.body.read
-  puts data.inspect
+  puts "DATA:" + data.inspect
   world.update_position data["name"], data["lat"], data["lng"]
 
   return "success".to_json
