@@ -1,17 +1,17 @@
 
 # Ruby Lotto test!
 
-
+require 'Set'
 
 
 def get_lotto
-	picked_numbers = {}
+	picked_numbers = Set.new
 	while picked_numbers.size < 7
 		num = 1 + Random.rand(35)
-		if (picked_numbers[num] == 1)
+		if (picked_numbers.include?(num))
 			#puts "Number #{num} already taken"
 		else
-			picked_numbers[num] = 1
+			picked_numbers.add(num)
 			#puts "Selected #{num}"
 		end
 	end
@@ -21,41 +21,15 @@ end
 def num_correct(correct_row, my_row)
 	n = 0
 	#puts "Size of my_row is #{my_row.keys.size}"
-	my_row.keys.each do |nn|
-		if correct_row[nn] == 1
+	my_row.each do |nn|
+		if correct_row.include?(nn)
 			n = n + 1
 		end
 	end
 	return n
 end
 
-
-test_correct = {1=>1,2=>1,3=>1,4=>1,5=>1,6=>1,7=>1}
-check = {1=>1,8=>1,9=>1,10=>1,11=>1,12=>1,13=>1}
-puts "Result should be 1: #{num_correct(test_correct, check)}"
-
-
-
-
 corr = get_lotto
-
-#max_correct = 0
-#1000000.times {
-#	my_row = get_lotto
-#	#puts "Correct numbers are #{num_correct(corr, my_row)}"
-#
-#	correct = num_correct(corr, my_row)
-#	if (correct == 7) 
-#		puts "************************ SJU RÄTT *********************"
-#	end
-#
-#	if (correct > max_correct)
-#		max_correct = correct
-#	end
-#}
-#
-#puts "Best guess was: #{max_correct} !"
-
 
 tries = 0
 loop do 
@@ -71,7 +45,7 @@ end
 
 puts "7 rätt efter #{tries} försök!"
 puts "Correct numbers were:"
-corr.keys.each do |i|
+corr.each do |i|
 	puts "#{i}"
 end
 
